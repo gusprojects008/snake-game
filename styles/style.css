@@ -1,0 +1,194 @@
+* {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body.dark-theme {
+  background-color: rgb(40, 40, 40);
+}
+
+body.light-theme {
+  background-color: whitesmoke;
+}
+
+#container0 {
+  margin: 2.3% auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#GameContainer {
+  position: relative;
+  width: 1500px;
+  height: 750px;
+  margin: 20px auto;
+  border-radius: 2rem;
+  overflow: hidden;
+  background-color: black;
+}
+
+canvas#GameArea {
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+#ScoreArea {
+  font-size: 2.5rem;
+  font-family: 'Bebas Neue', monospace;
+  font-weight: bolder;
+  text-align: center;
+  color: rgba(0, 255, 0);
+  z-index: 4;
+}
+
+#ScoreValue {
+    font-family: 'Bebas Neue', sans-serif;
+    color: red;
+    font-weight: bolder;
+    font-style: unset;
+}
+
+#TimeRegressive {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+    font-size: 10rem;
+    color: rgb(0, 255, 0);
+}
+
+@keyframes fadeout {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+#StartButton {
+  font-family: Monospace;
+  background-color: rgb(0, 255, 0);
+  height: 4rem;
+  width: 10rem;
+  font-size: 1.5rem;
+  border: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: auto;
+}
+
+#StartButton:hover {
+  box-shadow: 0px 0px 0.5rem 0.5rem rgb(135, 255, 110);
+  transform: box-shadow 0.5s ease-in-out;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  from, to {
+    border-right: 20px solid transparent;
+  }
+  50% {
+    border-right: 2px solid rgb(30, 75, 50);
+  }
+}
+
+#GameOver {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 5rem;
+  color: red;
+  font-family: Monospace, sans-serif;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  animation: typing 5s steps(50), blink 2s step-end;
+  white-space: nowrap;
+  display: none;
+}
+
+#ContinueGame {
+  position: absolute;
+  top: 65%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 20rem;
+  height: 5rem;
+  font-size: 30px;
+  border-radius: 10px;
+  font-family: "Audiowide", sans-serif;
+  font-weight: bolder;
+  color: rgb(255, 0, 0);
+  background-color: rgb(0, 0, 255);
+  border: none;
+  display: none;
+}
+
+#ContinueGame:hover {
+  transform: translate(-50%, -50%) scale(1.05)  ;
+  transition: transform 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.GameOverOverlay:not(.end) {
+  filter: blur(10%);
+}
+
+#orientation-warning {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+#mobile-controls {
+    display: none;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 5;
+}
+
+#mobile-controls button {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    border-radius: 10px;
+    border: none;
+    background-color: rgba(0, 255, 0, 0.8);
+    color: black;
+    font-weight: bold;
+}

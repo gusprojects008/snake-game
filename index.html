@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Snake Game</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/buttons-themes.css">
+</head>
+<body class="dark-theme">
+    <button id="toggle-theme" class="button-theme"></button>
+
+    <div id="orientation-warning">
+        <h1>Please rotate your device</h1>
+        <p>This game requires landscape mode.</p>
+        <p>Rotate your device and the game will reload automatically.</p>
+    </div>
+
+    <div id="container0">
+        <p id="ScoreArea">SCORE: <span id="ScoreValue">0</span></p>
+
+        <div id="GameContainer">
+            <canvas id="GameArea" width="1500" height="750"></canvas>
+
+            <div id="TimeRegressive"></div>
+            <span id="GameOver">GAME OVER!</span>
+            <button id="ContinueGame" onclick="continueGame()">CONTINUE</button>
+            <button id="StartButton" onclick="startCountdown()">START</button>
+
+            <div id="mobile-controls">
+                <button data-dir="up">▲</button>
+                <div>
+                    <button data-dir="left">◀</button>
+                    <button data-dir="down">▼</button>
+                    <button data-dir="right">▶</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/snake-game.js"></script>
+    <script src="scripts/toggle-theme.js"></script>
+</body>
+</html>

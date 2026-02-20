@@ -1,15 +1,29 @@
+const familyMode = true;
+
 const canvas = document.getElementById("GameArea");
 const ctx = canvas.getContext("2d");
 
-const size = 30;
-const xarea = 1500;
-const yarea = 750;
+let size;
+
+function calculateBlockSize() {
+    const rect = canvas.getBoundingClientRect();
+    const base = Math.min(rect.width, rect.height);
+    size = Math.floor(base / 30);
+}
+
+let xarea;
+let yarea;
 
 const scoreValue = document.getElementById("ScoreValue");
 const orientationWarning = document.getElementById("orientation-warning");
 const container = document.getElementById("container0");
 
-const eatSound = new Audio("statics/audio/audio.mp3");
+const eatSound = new Audio(
+    familyMode
+        ? "statics/audio/audio-familia.mp3"
+        : "statics/audio/audio.mp3"
+);
+
 const backgroundSound = new Audio("statics/audio/audiobackground.mp3");
 const countdownSound = new Audio("statics/audio/SnapInsta.io - Contagem Regressiva 3 Segundos (128 kbps).mp3");
 
@@ -17,29 +31,42 @@ let snakeSpeed = 100;
 let direction;
 let loopId;
 
-const snake = [{ x: 270, y: 240 }];
+let snake = [];
 
 function isMobile() {
     return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
-function checkOrientation() {
-    if (isMobile() && window.innerHeight > window.innerWidth) {
-        container.style.display = "none";
-        orientationWarning.style.display = "flex";
-    } else {
-        container.style.display = "flex";
-        orientationWarning.style.display = "none";
-    }
+function resizeCanvas() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+
+    canvas.style.width = rect.width + "px";
+    canvas.style.height = rect.height + "px";
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+
+    calculateBlockSize();
+
+    xarea = Math.floor(rect.width / size) * size;
+    yarea = Math.floor(rect.height / size) * size;
 }
 
-window.addEventListener("resize", () => {
-    if (isMobile() && window.innerWidth > window.innerHeight) {
-        location.reload();
-    }
-});
+function initGame() {
+    resizeCanvas();
 
-checkOrientation();
+    snake = [{
+        x: Math.floor((xarea / 2) / size) * size,
+        y: Math.floor((yarea / 2) / size) * size
+    }];
+
+    food.x = randomPositionX();
+    food.y = randomPositionY();
+}
 
 function drawSnake() {
     snake.forEach((pos, index) => {
@@ -65,8 +92,12 @@ function moveSnake() {
     snake.shift();
 }
 
-function randomPosition() {
+function randomPositionX() {
     return Math.floor(Math.random() * (xarea / size)) * size;
+}
+
+function randomPositionY() {
+    return Math.floor(Math.random() * (yarea / size)) * size;
 }
 
 function randomColor() {
@@ -77,8 +108,8 @@ function randomColor() {
 }
 
 const food = {
-    x: randomPosition(),
-    y: randomPosition(),
+    x: 0,
+    y: 0,
     color: randomColor()
 };
 
@@ -94,12 +125,21 @@ function checkEat() {
     const head = snake[snake.length - 1];
 
     if (head.x === food.x && head.y === food.y) {
-        snakeSpeed -= 8;
-        snake.push(head);
+        snakeSpeed = snakeSpeed - 10;
+        snake.push({ ...head });
+
         scoreValue.innerText = parseInt(scoreValue.innerText) + 1;
 
-        food.x = randomPosition();
-        food.y = randomPosition();
+        let newX = randomPositionX();
+        let newY = randomPositionY();
+
+        while (snake.find(p => p.x === newX && p.y === newY)) {
+            newX = randomPositionX();
+            newY = randomPositionY();
+        }
+
+        food.x = newX;
+        food.y = newY;
         food.color = randomColor();
 
         eatSound.play();
@@ -124,17 +164,25 @@ function checkCollision() {
     return false;
 }
 
-function gameLoop() {
-    ctx.clearRect(0, 0, xarea, yarea);
+let lastTime = 0;
 
-    drawFood();
-    moveSnake();
-    drawSnake();
-    checkEat();
-    if (checkCollision()) return;
+function gameLoop(currentTime = 0) {
+    const delta = currentTime - lastTime;
 
-    loopId = setTimeout(gameLoop, snakeSpeed);
-    backgroundSound.play();
+    if (delta > snakeSpeed) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawFood();
+        moveSnake();
+        drawSnake();
+        checkEat();
+
+        if (checkCollision()) return;
+
+        lastTime = currentTime;
+    }
+
+    requestAnimationFrame(gameLoop);
 }
 
 function startCountdown() {
@@ -151,6 +199,7 @@ function startCountdown() {
         if (count < 0) {
             clearInterval(interval);
             timer.style.display = "none";
+            initGame();
             gameLoop();
         }
     }, 1000);
@@ -168,11 +217,29 @@ document.addEventListener("keydown", (e) => {
 });
 
 if (isMobile()) {
-    document.getElementById("mobile-controls").style.display = "flex";
-
-    document.querySelectorAll("#mobile-controls button").forEach(btn => {
-        btn.addEventListener("click", () => {
-            direction = btn.getAttribute("data-dir");
-        });
+    let touchStartX = 0;
+    let touchStartY = 0;
+    
+    canvas.addEventListener("touchstart", e => {
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+    });
+    
+    canvas.addEventListener("touchend", e => {
+        const touch = e.changedTouches[0];
+    
+        const dx = touch.clientX - touchStartX;
+        const dy = touch.clientY - touchStartY;
+    
+        if (Math.abs(dx) > Math.abs(dy)) {
+            direction = dx > 0 ? "right" : "left";
+        } else {
+            direction = dy > 0 ? "down" : "up";
+        }
     });
 }
+
+window.addEventListener("resize", () => {
+    resizeCanvas();
+});

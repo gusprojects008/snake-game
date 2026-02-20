@@ -15,7 +15,6 @@ let xarea;
 let yarea;
 
 const scoreValue = document.getElementById("ScoreValue");
-const orientationWarning = document.getElementById("orientation-warning");
 const container = document.getElementById("container0");
 
 const eatSound = new Audio(
@@ -82,7 +81,7 @@ function moveSnake() {
     if (!direction) return;
 
     const head = snake[snake.length - 1];
-    let newHead = { x: head.x, y: head.y };
+    let newHead = {x: head.x, y: head.y};
 
     if (direction === "right") newHead.x += size;
     if (direction === "left") newHead.x -= size;
@@ -174,8 +173,8 @@ function gameLoop(currentTime = 0) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         drawFood();
-        moveSnake();
         drawSnake();
+        moveSnake();
         checkEat();
 
         if (checkCollision()) return;

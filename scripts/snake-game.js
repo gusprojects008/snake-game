@@ -24,8 +24,8 @@ const eatSound = new Audio(
         : "statics/audio/audio.mp3"
 );
 
-const backgroundSound = new Audio("statics/audio/audiobackground.mp3");
-const countdownSound = new Audio("statics/audio/SnapInsta.io - Contagem Regressiva 3 Segundos (128 kbps).mp3");
+const backgroundSound = new Audio("statics/audio/audio-background.mp3");
+const countdownSound = new Audio("statics/audio/contagem-regressiva.mp3");
 
 let snakeSpeed = 100;
 let direction;
@@ -57,6 +57,7 @@ function resizeCanvas() {
 }
 
 function initGame() {
+    backgroundSound.play();
     resizeCanvas();
 
     snake = [{
